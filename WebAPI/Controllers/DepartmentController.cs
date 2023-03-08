@@ -45,7 +45,6 @@ namespace WebAPI.Controllers
             return Ok("Updated Successfully");
         }
         [HttpDelete]
-        //[HttpDelete("{id}")]
         [Route("DeleteDepartment")]
         public JsonResult Delete(int id)
         {

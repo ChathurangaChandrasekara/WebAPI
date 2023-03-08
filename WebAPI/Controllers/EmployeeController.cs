@@ -52,7 +52,6 @@ namespace WebAPI.Controllers
         }
         [HttpDelete]
         [Route("DeleteEmployee")]
-        //[HttpDelete("{id}")]
         public JsonResult Delete(int id)
         {
             var result = _employeeRepository.DeleteEmployee(id);

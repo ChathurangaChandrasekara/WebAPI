@@ -11,13 +11,38 @@ namespace WebAPI.Repository
             _appDBContext = context ??
                 throw new ArgumentNullException(nameof(context));
         }
-        public async Task<IEnumerable<Employee>> GetEmployees()
+        public async Task<IEnumerable<EmployeeDetailsDTO>> GetEmployees()
         {
-            return await _appDBContext.Employees.ToListAsync();
+            var data = await (from emp in _appDBContext.Employees
+                        join dep in _appDBContext.Departments
+                        on emp.DepartmentId equals dep.DepartmentId
+                        select new EmployeeDetailsDTO
+                        {
+                            EmployeeID = emp.EmployeeID,
+                            EmployeeName = emp.EmployeeName,
+                            Email = emp.Email,
+                            DOJ = emp.DOJ,
+                            DepartmentId = emp.DepartmentId,
+                            DepartmentName = dep.DepartmentName
+                        }).ToListAsync();
+            return data;
         }
-        public async Task<Employee> GetEmployeeByID(int ID)
+        public async Task<EmployeeDetailsDTO> GetEmployeeByID(int ID)
         {
-            return await _appDBContext.Employees.FindAsync(ID);
+            var data =  await (from emp in _appDBContext.Employees
+                              join dep in _appDBContext.Departments
+                              on emp.DepartmentId equals dep.DepartmentId
+                              where emp.EmployeeID == ID
+                              select new EmployeeDetailsDTO
+                              {
+                                  EmployeeID = emp.EmployeeID,
+                                  EmployeeName = emp.EmployeeName,
+                                  Email = emp.Email,
+                                  DOJ = emp.DOJ,
+                                  DepartmentId = emp.DepartmentId,
+                                  DepartmentName = dep.DepartmentName
+                              }).SingleOrDefaultAsync();
+            return data;
         }
         public async Task<Employee> InsertEmployee(Employee objEmployee)
         {
